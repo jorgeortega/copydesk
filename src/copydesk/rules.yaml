@@ -1,0 +1,112 @@
+# Compliance rules for Acme Telehealth ads. Data only.
+# check: regex | max_length | contains  -> run in code by copydesk.rules
+# check: llm                            -> judged by the compliance reviewer
+# A rule_id may appear twice (regex + llm) when explicit wording is caught in code
+# and implied meaning is left to the reviewer.
+
+disclaimer: "Rx required. Results vary."
+
+rules:
+  - rule_id: no_cure_claims
+    check: regex
+    fields: [primary_text, headline, description]
+    pattern: '\b(?:cure[sd]?|curing|heal(?:s|ed)?\s+(?:it\s+)?forever|eliminate[sd]?)\b'
+    description: Do not claim the service cures or eliminates a condition.
+    fix_hint: Describe the service (access to a licensed clinician), not a medical outcome.
+
+  - rule_id: no_fda_claims
+    check: regex
+    fields: [primary_text, headline, description]
+    pattern: '\bFDA[-\s]+(?:approved|cleared)\b'
+    description: Do not make FDA approval or clearance claims.
+    fix_hint: Remove the regulatory claim.
+
+  - rule_id: no_rx_promise
+    check: regex
+    fields: [primary_text, headline, description]
+    pattern: '\b(?:get|receive)\s+your\s+(?:prescription|rx|meds)\b|\bguaranteed\s+(?:rx|prescriptions?)\b|\bmeds\s+in\s+\d+\s+(?:hours?|days?)\b'
+    description: Do not promise that the reader will get a prescription.
+    fix_hint: Say a licensed clinician decides whether treatment is right for you.
+
+  - rule_id: no_rx_promise
+    check: llm
+    description: Do not imply that a prescription or medication is assured, fast-tracked or automatic.
+    fix_hint: Say a licensed clinician decides whether treatment is right for you.
+
+  - rule_id: no_personal_attributes
+    check: llm
+    description: >-
+      Do not assert or imply the reader has a health condition or personal attribute
+      (e.g. "Are you depressed?", "Your ED", "Struggling with your weight?").
+    fix_hint: Talk about the service, not the reader's condition.
+
+  - rule_id: price_qualifier
+    check: regex
+    fields: [primary_text, headline, description]
+    pattern: '(?<!starting at )(?<!from )\$\d+(?:\.\d{2})?'
+    description: Any price must be introduced with "starting at" or "from".
+    fix_hint: Add "starting at" before the price.
+
+  - rule_id: no_body_shaming
+    check: regex
+    fields: [primary_text, headline, description]
+    pattern: '\b(?:fat|flabby|muffin\s+top|ugly|problem\s+areas?|love\s+handles|beach\s+body)\b'
+    description: No body-shaming language.
+    fix_hint: Talk about health and access to care, not appearance or shame.
+
+  - rule_id: no_body_shaming
+    check: llm
+    description: >-
+      No body shaming, implied or explicit: appearance-based shame, before/after framing,
+      "finally love your body", or suggesting the reader's body is a problem.
+    fix_hint: Talk about health and access to care, not appearance or shame.
+
+  - rule_id: no_children
+    check: regex
+    fields: [primary_text, headline, description]
+    pattern: '\b(?:kids?|child|children|childhood|pediatrics?|pediatrician|teens?|teenagers?|toddlers?|bab(?:y|ies)|infants?)\b'
+    description: Nothing about children or minors.
+    fix_hint: Remove references to minors. Acme ads target adults only.
+
+  - rule_id: no_children
+    check: llm
+    description: >-
+      Nothing about children or minors, including implied references ("the whole family",
+      "back-to-school", "your little one") and "minor(s)" used to mean a person under 18.
+      "minor" as an adjective (e.g. "minor side effects") is fine.
+    fix_hint: Remove references to minors. Acme ads target adults only.
+
+  - rule_id: no_false_promises
+    check: regex
+    fields: [primary_text, headline, description]
+    pattern: '\b(?:guarantee[sd]?|instant(?:ly)?|overnight|risk[-\s]free|never\s+again)\b|\b100\s?%|\bresults\s+in\s+\d+\s+(?:days?|weeks?)\b'
+    description: No guarantees or certain outcomes.
+    fix_hint: Replace certain outcomes with what the service actually does.
+
+  - rule_id: no_false_promises
+    check: llm
+    description: >-
+      No false promises: implied certain outcomes, invented statistics, testimonials
+      or claims Acme cannot back up.
+    fix_hint: Replace certain outcomes with what the service actually does.
+
+  - rule_id: required_disclaimer
+    check: contains
+    fields: [primary_text]
+    text: "Rx required. Results vary."
+    description: Primary text must include the disclaimer "Rx required. Results vary."
+    fix_hint: End the primary text with "Rx required. Results vary."
+
+  - rule_id: headline_length
+    check: max_length
+    fields: [headline]
+    max: 40
+    description: Headline is at most 40 characters.
+    fix_hint: Shorten the headline to 40 characters or fewer.
+
+  - rule_id: primary_text_length
+    check: max_length
+    fields: [primary_text]
+    max: 125
+    description: Primary text is at most 125 characters, including the disclaimer.
+    fix_hint: Shorten the primary text to 125 characters or fewer, disclaimer included.

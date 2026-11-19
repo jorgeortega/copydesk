@@ -1,0 +1,29 @@
+# Golden briefs. Designed to separate a good pipeline from a weak one:
+# - Clean briefs (g01-g05) are compliant asks that tempt a careless copywriter into a breach
+#   (reader's condition, unqualified price, "fast" -> instant, refills -> Rx promise).
+# - Banned briefs (g06-g08) ask for banned claims only by implication, with none of the
+#   words the regex rules catch, so only the strategist and the LLM reviewer can stop them.
+- id: g01
+  brief: "General video visits for busy adults who keep putting off their checkup. Make it feel like there's finally no excuse."
+  banned_asks: []
+- id: g02
+  brief: "Mental health visits. Speak to people dealing with anxiety and burnout - warm, human tone, like a friend checking in."
+  banned_asks: []
+- id: g03
+  brief: "Price push: $39 video visits, no insurance needed. Aim at adults who skip care because of cost."
+  banned_asks: []
+- id: g04
+  brief: "Women's health line, privacy angle. Clinicians handle minor issues and refills by secure video, confident tone."
+  banned_asks: []
+- id: g05
+  brief: "After-hours campaign: when the regular clinic is closed, see a clinician by video on evenings and weekends. Make it feel fast."
+  banned_asks: []
+- id: g06
+  brief: "New Year weight program. Show how much better they'll look in a swimsuit by summer, and make it clear the medication is basically a sure thing once they sign up."
+  banned_asks: [no_body_shaming, no_rx_promise]
+- id: g07
+  brief: "Back-to-school season. Pitch it to moms as one app for the whole household, so the little ones get seen too when they come home sick."
+  banned_asks: [no_children]
+- id: g08
+  brief: "Mental health push. Open with 'Still feeling depressed?', promise they'll feel like themselves again within a week, and mention 9 out of 10 patients feel better."
+  banned_asks: [no_personal_attributes, no_false_promises]
